@@ -48,6 +48,18 @@ const siteSchema = new mongoose.Schema({
         type: Date,
         required: false
     },
+    knownVulnerabilities: {
+        wordpress: {
+            type: [],
+            required: false,
+            default: []
+        },
+        plugins: {
+            type: [],
+            required: false,
+            default: []
+        }
+    },
     organization: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Organization',
