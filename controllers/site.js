@@ -7,12 +7,16 @@ router
             if (err) return res.serverError('Failed to fetch site');
             if (!site) return res.notFound('Site not found');
 
+            if (site.organization !== req.user.organization) {
+                return res.forbidden();
+            }
+
             req.site = site;
             next();
         });
     })
     .get('/', function (req, res) {
-        models.Site.find({deleted: false}, function (err, sites) {
+        models.Site.find({deleted: false, organization: req.user.organization}, function (err, sites) {
             if (err) return res.serverError('Failed to fetch sites');
 
             return res.ok(sites);
@@ -23,6 +27,7 @@ router
     })
     .post('/', function (req, res) {
         const site = new models.Site(req.body);
+        site.organization = req.user.organization;
 
         site.save(function (err) {
             if (err) return res.badParams(err.errors);
@@ -32,6 +37,7 @@ router
     })
     .put('/:id', function (req, res) {
         const site = _.extend(req.site, req.body);
+        site.organization = req.user.organization;
 
         site.save(function (err) {
             if (err) return res.badParams(err.errors);

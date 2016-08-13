@@ -29,5 +29,9 @@ module.exports = function (req, res, next) {
         return res.status(400).json(errors);
     };
 
+    res.forbidden = function () {
+        return res.status(403).end();
+    };
+
     return next();
 };
